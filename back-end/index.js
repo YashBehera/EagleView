@@ -6,6 +6,7 @@ const cors = require("cors");
 const userRoutes = require("./routes/user");
 const razorpayRoutes = require("./routes/razorpay");
 const zerodhaRoutes = require("./routes/zerodhaRoutes");
+const tax = require("./routes/tax");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const http = require("http");
@@ -652,6 +653,7 @@ app.post("/api/stock/quotes", async (req, res) => {
 // Routes
 app.use("/api", userRoutes);
 app.use("/zerodha", zerodhaRoutes);
+app.use("/tax", tax);
 app.use("/razorpay", razorpayRoutes);
 app.use("/api/ticker-stocks", tickerStocksRoutes);
 app.use("/smallcase", smallcaseRoutes);
