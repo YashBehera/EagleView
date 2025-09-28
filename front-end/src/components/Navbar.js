@@ -71,6 +71,18 @@ export default function Navbar() {
     setIsMenuOpen(false);
   };
 
+  const handleTaxClick = () => {
+    window.scrollTo(0, 0);
+    navigate("/tax");
+    setIsMenuOpen(false);
+  };
+
+  const handleTradingViewClick = () => {
+    window.scrollTo(0, 0);  
+    navigate("/tradingview");
+    setIsMenuOpen(false);
+  };
+
   const handleSupportClick = () => {
     window.scrollTo(0, 0);
     navigate("/contact-us");
@@ -458,6 +470,24 @@ export default function Navbar() {
                   </button>
                   <button
                     onClick={() => {
+                      handleTaxClick();
+                      setIsMoreDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Smart Tax
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleTradingViewClick();
+                      setIsMoreDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Charts
+                  </button>
+                  <button
+                    onClick={() => {
                       handleSupportClick();
                       setIsMoreDropdownOpen(false);
                     }}
@@ -788,6 +818,18 @@ export default function Navbar() {
                   className="flex items-center gap-3 px-4 py-3 text-black hover:bg-gray-50 rounded-lg transition-colors"
                 >
                   <span className="text-sm font-medium">Market Watch</span>
+                </button>
+                <button
+                  onClick={handleTaxClick}
+                  className="flex items-center gap-3 px-4 py-3 text-black hover:bg-gray-50 rounded-lg transition-colors"
+                >
+                  <span className="text-sm font-medium">Smart Tax</span>
+                </button>
+                <button
+                  onClick={handleTradingViewClick}
+                  className="flex items-center gap-3 px-4 py-3 text-black hover:bg-gray-50 rounded-lg transition-colors"
+                >
+                  <span className="text-sm font-medium">Charts</span>
                 </button>
                 <button
                   onClick={handleSubsrciptionClick}
