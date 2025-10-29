@@ -104,7 +104,7 @@ const calculateSMA = (data, options = { length: 20, source: 'close' }) => {
 
 const calculateEMA = (data, period = 20) => {
   if (data.length === 0) return [];
-  
+
   const multiplier = 2 / (period + 1);
   const emaData = [];
 
@@ -327,9 +327,9 @@ const TradingView = () => {
 
   // Indicator helpers
   const applyIndicator = (
-    sourceSeries, 
-    options, 
-    calculateFunc, 
+    sourceSeries,
+    options,
+    calculateFunc,
     seriesOptions = {}
   ) => {
     if (!chartRef.current) return null;
@@ -348,7 +348,7 @@ const TradingView = () => {
     };
 
     updateIndicator();
-    
+
     return indicatorSeries;
   };
 
@@ -390,7 +390,7 @@ const TradingView = () => {
       setLoading(true);
       setError(null);
       await new Promise((resolve) => setTimeout(resolve, 300));
-      
+
       let data = [];
       if (symbol === 'yieldCurve') {
         data = mockData.yieldCurve;
@@ -399,7 +399,7 @@ const TradingView = () => {
       } else {
         data = mockData[symbol] || [];
       }
-      
+
       if (data.length === 0) throw new Error(`No data available for ${symbol}`);
 
       if (data.length > 1) {
@@ -687,14 +687,14 @@ const TradingView = () => {
 
     if (!candlestickSeriesRef.current) return;
 
-    const symbolData = symbol === 'yieldCurve' ? mockData.yieldCurve : 
-                      symbol === 'options' ? mockData.options : 
-                      mockData[symbol];
-    
+    const symbolData = symbol === 'yieldCurve' ? mockData.yieldCurve :
+      symbol === 'options' ? mockData.options :
+        mockData[symbol];
+
     if (!symbolData || symbolData.length === 0) return;
 
     let lastData = symbolData[symbolData.length - 1];
-    
+
     liveIntervalRef.current = setInterval(() => {
       if (!candlestickSeriesRef.current) return;
 
@@ -862,48 +862,52 @@ const TradingView = () => {
       <Navbar theme={theme} toggleTheme={toggleTheme} />
       <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-950' : 'bg-gray-50'} transition-all duration-300`}>
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          {/* Header Card */}
           <div className={`${theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'} rounded-2xl shadow-xl border mb-6 overflow-hidden transition-all duration-300`}>
-            <div className={`${theme === 'dark' ? 'bg-gradient-to-r from-gray-900 to-gray-800' : 'bg-gradient-to-r from-gray-50 to-white'} px-6 py-4 border-b ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'}`}>
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-center gap-6">
+            {/* Price Header */}
+            <div className={`${theme === 'dark' ? 'bg-gradient-to-r from-gray-900 to-gray-800' : 'bg-gradient-to-r from-gray-50 to-white'} px-6 py-6 border-b ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'}`}>
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div className="flex items-center gap-8">
                   <div>
-                    <div className="flex items-center gap-3">
-                      <h1 className={`text-3xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                    <div className="flex items-center gap-3 mb-2">
+                      <h1 className={`text-4xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                         {symbol}
                       </h1>
                       {isLive && (
-                        <span className="flex items-center gap-1.5 px-3 py-1 bg-green-500/20 text-green-500 text-sm font-medium rounded-full animate-pulse">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/20 text-emerald-500 text-sm font-semibold rounded-full animate-pulse border border-emerald-500/20">
+                          <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
                           LIVE
                         </span>
                       )}
                     </div>
-                    <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} text-sm mt-1`}>
+                    <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} text-sm font-medium`}>
                       {symbol === 'BTCUSD' ? 'Bitcoin / USD' :
-                        symbol === 'AAPL' ? 'Apple Inc.' :
-                        symbol === 'GOOGL' ? 'Alphabet Inc.' :
-                        symbol === 'TSLA' ? 'Tesla Inc.' :
-                        symbol === 'yieldCurve' ? 'Yield Curve' :
-                        'Options Chain'}
+                        symbol === 'AAPL' ? 'Apple Inc. (NASDAQ)' :
+                          symbol === 'GOOGL' ? 'Alphabet Inc. (NASDAQ)' :
+                            symbol === 'TSLA' ? 'Tesla Inc. (NASDAQ)' :
+                              symbol === 'yieldCurve' ? 'US Treasury Yield Curve' :
+                                'Options Chain Analysis'}
                     </p>
                   </div>
                   {currentPrice && (
-                    <div className="flex items-baseline gap-4">
-                      <span className={`text-4xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                        {chartType === 'yieldCurve' ? `${currentPrice.toFixed(3)}%` : `$${currentPrice.toFixed(2)}`}
+                    <div className="flex flex-col lg:flex-row lg:items-baseline gap-2 lg:gap-6">
+                      <span className={`text-5xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                        {chartType === 'yieldCurve' ? `${currentPrice.toFixed(3)}%` : `$${currentPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                       </span>
-                      <div className="flex flex-col items-end">
-                        <span className={`text-lg font-medium ${priceChange && priceChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      <div className="flex flex-col lg:items-end">
+                        <span className={`text-xl font-bold ${priceChange && priceChange >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
                           {priceChange && priceChange >= 0 ? '+' : ''}{priceChange?.toFixed(2)}
                         </span>
-                        <span className={`text-sm ${priceChange && priceChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                        <span className={`text-sm font-medium ${priceChange && priceChange >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
                           ({priceChange && priceChange >= 0 ? '+' : ''}{priceChangePercent?.toFixed(2)}%)
                         </span>
                       </div>
                     </div>
                   )}
                 </div>
-                <div className="flex items-center gap-2">
+                
+                {/* Chart Type Buttons */}
+                <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 p-1.5 rounded-xl">
                   {['candlestick', 'area', 'line', 'yieldCurve', 'options', 'custom'].map((type) => (
                     <button
                       key={type}
@@ -915,185 +919,172 @@ const TradingView = () => {
                           setSymbol('AAPL');
                         }
                       }}
-                      className={`px-4 py-2 rounded-lg font-medium capitalize transition-all duration-200 ${chartType === type
-                          ? theme === 'dark'
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-blue-500 text-white'
-                          : theme === 'dark'
-                            ? 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      className={`px-4 py-2.5 rounded-lg font-semibold capitalize transition-all duration-200 text-sm ${chartType === type
+                        ? theme === 'dark'
+                          ? 'bg-blue-600 text-white shadow-lg'
+                          : 'bg-blue-500 text-white shadow-lg'
+                        : theme === 'dark'
+                          ? 'text-gray-400 hover:bg-gray-700 hover:text-white'
+                          : 'text-gray-600 hover:bg-gray-200 hover:text-gray-900'
                         }`}
                     >
                       {type === 'candlestick' ? 'Candles' :
-                        type === 'yieldCurve' ? 'Yield Curve' :
-                        type === 'options' ? 'Options' :
-                        type === 'custom' ? 'Custom' :
-                        type}
+                        type === 'yieldCurve' ? 'Yield' :
+                          type === 'options' ? 'Options' :
+                            type === 'custom' ? 'Custom' :
+                              type}
                     </button>
                   ))}
                 </div>
               </div>
             </div>
-            <div className={`px-6 py-4 ${theme === 'dark' ? 'bg-gray-900/50' : 'bg-gray-50/50'}`}>
-              <div className="flex flex-wrap items-center justify-between gap-4">
+  
+            {/* Controls Panel */}
+            <div className={`px-6 py-5 ${theme === 'dark' ? 'bg-gray-900/30' : 'bg-gray-50/50'} border-b ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'}`}>
+              <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                {/* Symbol & Interval Selection */}
                 <div className="flex flex-wrap items-center gap-4">
                   <select
                     value={symbol}
                     onChange={handleSymbolChange}
-                    className={`px-4 py-2.5 rounded-xl border ${theme === 'dark'
-                        ? 'bg-gray-800 border-gray-700 text-white focus:border-blue-500'
-                        : 'bg-white border-gray-300 text-gray-900 focus:border-blue-500'
+                    className={`px-4 py-3 rounded-xl border-2 font-semibold min-w-[200px] ${theme === 'dark'
+                      ? 'bg-gray-800 border-gray-600 text-white focus:border-blue-500'
+                      : 'bg-white border-gray-300 text-gray-900 focus:border-blue-500'
                       } focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all duration-200`}
                   >
                     <option value="AAPL">AAPL - Apple Inc.</option>
                     <option value="GOOGL">GOOGL - Alphabet Inc.</option>
                     <option value="TSLA">TSLA - Tesla Inc.</option>
                     <option value="BTCUSD">BTC/USD - Bitcoin</option>
-                    <option value="yieldCurve">Yield Curve</option>
+                    <option value="yieldCurve">US Treasury Yield Curve</option>
                     <option value="options">Options Chain</option>
                   </select>
-                  <div className="flex items-center gap-1 p-1 rounded-xl bg-gray-100 dark:bg-gray-800">
+                  
+                  <div className="flex items-center gap-1 p-1.5 rounded-xl bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
                     {['1m', '5m', '15m', '1H', '1D'].map((int) => (
                       <button
                         key={int}
                         onClick={() => setInterval(int)}
                         disabled={chartType === 'yieldCurve' || chartType === 'options'}
-                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${interval === int
-                            ? theme === 'dark'
-                              ? 'bg-gray-700 text-white'
-                              : 'bg-white text-gray-900 shadow-sm'
-                            : theme === 'dark'
-                              ? 'text-gray-400 hover:text-white'
-                              : 'text-gray-600 hover:text-gray-900'
-                          } ${chartType === 'yieldCurve' || chartType === 'options' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 min-w-[50px] ${interval === int
+                          ? theme === 'dark'
+                            ? 'bg-gray-600 text-white shadow-md'
+                            : 'bg-white text-gray-900 shadow-md border border-gray-200'
+                          : theme === 'dark'
+                            ? 'text-gray-400 hover:text-white hover:bg-gray-600'
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                          } ${chartType === 'yieldCurve' || chartType === 'options' ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                       >
                         {int}
                       </button>
                     ))}
                   </div>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <label className="flex items-center gap-2 cursor-pointer">
+                </div>
+  
+                {/* Basic Indicators */}
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex items-center gap-4">
+                    <label className="flex items-center gap-2 cursor-pointer group">
                       <input
                         type="checkbox"
                         checked={showVolume}
                         onChange={(e) => setShowVolume(e.target.checked)}
                         disabled={chartType === 'yieldCurve' || chartType === 'options'}
-                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:opacity-50"
+                        className="w-4 h-4 rounded border-2 border-gray-300 text-blue-600 focus:ring-blue-500 disabled:opacity-50"
                       />
-                      <span className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'} ${chartType === 'yieldCurve' || chartType === 'options' ? 'opacity-50' : ''}`}>
+                      <span className={`text-sm font-semibold ${theme === 'dark' ? 'text-gray-300 group-hover:text-white' : 'text-gray-700 group-hover:text-gray-900'} ${chartType === 'yieldCurve' || chartType === 'options' ? 'opacity-50' : ''} transition-colors`}>
                         Volume
                       </span>
                     </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
+                    
+                    <label className="flex items-center gap-2 cursor-pointer group">
                       <input
                         type="checkbox"
                         checked={showSMA}
                         onChange={(e) => setShowSMA(e.target.checked)}
-                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        className="w-4 h-4 rounded border-2 border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
-                      <span className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <span className={`text-sm font-semibold ${theme === 'dark' ? 'text-gray-300 group-hover:text-white' : 'text-gray-700 group-hover:text-gray-900'} transition-colors`}>
                         SMA
                       </span>
                     </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
+                    
+                    <label className="flex items-center gap-2 cursor-pointer group">
                       <input
                         type="checkbox"
                         checked={showEMA}
                         onChange={(e) => setShowEMA(e.target.checked)}
-                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        className="w-4 h-4 rounded border-2 border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
-                      <span className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <span className={`text-sm font-semibold ${theme === 'dark' ? 'text-gray-300 group-hover:text-white' : 'text-gray-700 group-hover:text-gray-900'} transition-colors`}>
                         EMA
                       </span>
                     </label>
-                    {[
-                      { key: 'averagePrice', label: 'Avg Price', opts: { source1: 'close', source2: 'open' } },
-                      { key: 'correlation', label: 'Correlation', opts: { length: 20, source: 'close' } },
-                      { key: 'medianPrice', label: 'Median', opts: {} },
-                      { key: 'momentum', label: 'Momentum', opts: { length: 10, source: 'close' } },
-                      { key: 'percentChange', label: '% Change', opts: { length: 1, source: 'close' } },
-                      { key: 'product', label: 'Product', opts: { length: 20, source: 'close' } },
-                      { key: 'ratio', label: 'Ratio', opts: { source1: 'close', source2: 'open' } },
-                      { key: 'spread', label: 'Spread', opts: { source1: 'high', source2: 'low' } },
-                      { key: 'sum', label: 'Sum', opts: { length: 20, source: 'close' } },
-                      { key: 'weightedClose', label: 'W. Close', opts: {} },
-                    ].map(({ key, label, opts }) => (
-                      <label key={key} className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={indicators[key]?.enabled || false}
-                          onChange={(e) => setIndicators(prev => ({ ...prev, [key]: { enabled: e.target.checked, opts } }))}
-                          className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
-                          {label}
-                        </span>
-                      </label>
-                    ))}
-                    {(showSMA || showEMA) && (
-                      <select
-                        value={maPeriod}
-                        onChange={(e) => setMAPeriod(parseInt(e.target.value))}
-                        className={`ml-2 px-3 py-1.5 rounded-lg border text-sm ${theme === 'dark'
-                            ? 'bg-gray-800 border-gray-700 text-white'
-                            : 'bg-white border-gray-300 text-gray-900'
-                          } focus:outline-none focus:ring-2 focus:ring-blue-500/20`}
-                      >
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                        <option value="200">200</option>
-                      </select>
-                    )}
                   </div>
+  
+                  {(showSMA || showEMA) && (
+                    <select
+                      value={maPeriod}
+                      onChange={(e) => setMAPeriod(parseInt(e.target.value))}
+                      className={`px-3 py-2 rounded-lg border-2 text-sm font-semibold ${theme === 'dark'
+                        ? 'bg-gray-800 border-gray-600 text-white focus:border-blue-500'
+                        : 'bg-white border-gray-300 text-gray-900 focus:border-blue-500'
+                        } focus:outline-none focus:ring-2 focus:ring-blue-500/20`}
+                    >
+                      <option value="10">Period: 10</option>
+                      <option value="20">Period: 20</option>
+                      <option value="50">Period: 50</option>
+                      <option value="100">Period: 100</option>
+                      <option value="200">Period: 200</option>
+                    </select>
+                  )}
                 </div>
-                <div className="flex items-center gap-2">
+  
+                {/* Action Buttons */}
+                <div className="flex items-center justify-end gap-3">
                   <button
                     onClick={refreshChart}
-                    className={`p-2.5 rounded-xl ${theme === 'dark'
-                        ? 'bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white'
-                        : 'bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900'
-                      } transition-all duration-200`}
+                    className={`p-3 rounded-xl ${theme === 'dark'
+                      ? 'bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white border border-gray-700'
+                      : 'bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 border border-gray-200'
+                      } transition-all duration-200 group`}
                     title="Refresh Chart"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
                   </button>
+                  
                   <button
                     onClick={() => setIsLive(!isLive)}
-                    className={`px-4 py-2.5 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 ${isLive
-                        ? 'bg-green-600 hover:bg-green-700 text-white'
-                        : theme === 'dark'
-                          ? 'bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white'
-                          : 'bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900'
+                    className={`px-5 py-3 rounded-xl font-bold transition-all duration-200 flex items-center gap-2 shadow-lg ${isLive
+                      ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-emerald-500/25'
+                      : theme === 'dark'
+                        ? 'bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white border border-gray-700'
+                        : 'bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 border border-gray-200'
                       }`}
                     title={isLive ? 'Stop Live Feed' : 'Start Live Feed'}
                   >
                     {isLive ? (
                       <>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
-                        </svg>
-                        Stop
+                        <div className="w-4 h-4 bg-white rounded-sm"></div>
+                        Stop Live
                       </>
                     ) : (
                       <>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z"/>
                         </svg>
-                        Live
+                        Start Live
                       </>
                     )}
                   </button>
+                  
                   <button
                     onClick={exportChart}
-                    className={`p-2.5 rounded-xl ${theme === 'dark'
-                        ? 'bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white'
-                        : 'bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900'
+                    className={`p-3 rounded-xl ${theme === 'dark'
+                      ? 'bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white border border-gray-700'
+                      : 'bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 border border-gray-200'
                       } transition-all duration-200`}
                     title="Export Chart"
                   >
@@ -1103,58 +1094,81 @@ const TradingView = () => {
                   </button>
                 </div>
               </div>
+  
+              {/* Advanced Indicators - Collapsible */}
+              <details className="mt-4">
+                <summary className={`cursor-pointer text-sm font-semibold ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
+                  Advanced Indicators
+                </summary>
+                <div className="mt-4 flex flex-wrap gap-4">
+                  {[
+                    { key: 'averagePrice', label: 'Avg Price', opts: { source1: 'close', source2: 'open' } },
+                    { key: 'correlation', label: 'Correlation', opts: { length: 20, source: 'close' } },
+                    { key: 'medianPrice', label: 'Median', opts: {} },
+                    { key: 'momentum', label: 'Momentum', opts: { length: 10, source: 'close' } },
+                    { key: 'percentChange', label: '% Change', opts: { length: 1, source: 'close' } },
+                    { key: 'product', label: 'Product', opts: { length: 20, source: 'close' } },
+                    { key: 'ratio', label: 'Ratio', opts: { source1: 'close', source2: 'open' } },
+                    { key: 'spread', label: 'Spread', opts: { source1: 'high', source2: 'low' } },
+                    { key: 'sum', label: 'Sum', opts: { length: 20, source: 'close' } },
+                    { key: 'weightedClose', label: 'W. Close', opts: {} },
+                  ].map(({ key, label, opts }) => (
+                    <label key={key} className="flex items-center gap-2 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        checked={indicators[key]?.enabled || false}
+                        onChange={(e) => setIndicators(prev => ({ ...prev, [key]: { enabled: e.target.checked, opts } }))}
+                        className="w-4 h-4 rounded border-2 border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      <span className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-300 group-hover:text-white' : 'text-gray-700 group-hover:text-gray-900'} transition-colors`}>
+                        {label}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </details>
             </div>
           </div>
+  
+          {/* Chart Container */}
           <div className={`${theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'} rounded-2xl shadow-xl border relative overflow-hidden transition-all duration-300`}>
-            <div className={`px-6 py-4 border-b ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'} flex items-center justify-between`}>
+            {/* Chart Header */}
+            <div className={`px-6 py-4 border-b ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'} flex items-center justify-between bg-gradient-to-r ${theme === 'dark' ? 'from-gray-900 to-gray-800' : 'from-gray-50 to-white'}`}>
               {legendValue && (
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-8">
                   {chartType === 'candlestick' ? (
                     <>
-                      <div>
-                        <span className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>Open</span>
-                        <p className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                          {legendValue.open?.toFixed(2)}
-                        </p>
-                      </div>
-                      <div>
-                        <span className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>High</span>
-                        <p className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                          {legendValue.high?.toFixed(2)}
-                        </p>
-                      </div>
-                      <div>
-                        <span className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>Low</span>
-                        <p className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                          {legendValue.low?.toFixed(2)}
-                        </p>
-                      </div>
-                      <div>
-                        <span className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>Close</span>
-                        <p className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                          {legendValue.close?.toFixed(2)}
-                        </p>
-                      </div>
+                      {['open', 'high', 'low', 'close'].map((key) => (
+                        <div key={key}>
+                          <span className={`text-xs font-medium uppercase tracking-wide ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
+                            {key}
+                          </span>
+                          <p className={`font-bold text-lg ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                            ${legendValue[key]?.toFixed(2)}
+                          </p>
+                        </div>
+                      ))}
                     </>
                   ) : (
                     <div>
-                      <span className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
+                      <span className={`text-xs font-medium uppercase tracking-wide ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
                         {chartType === 'yieldCurve' ? 'Yield' : chartType === 'options' ? 'Price' : 'Value'}
                       </span>
-                      <p className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                        {chartType === 'yieldCurve' ? `${legendValue.value?.toFixed(3)}%` : legendValue.value?.toFixed(2)}
+                      <p className={`font-bold text-xl ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                        {chartType === 'yieldCurve' ? `${legendValue.value?.toFixed(3)}%` : `$${legendValue.value?.toFixed(2)}`}
                       </p>
                     </div>
                   )}
                 </div>
               )}
-              <div className="flex items-center gap-2">
+              
+              <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 p-1.5 rounded-xl">
                 <button
                   onClick={zoomIn}
-                  className={`p-2 rounded-lg ${theme === 'dark'
-                      ? 'bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white'
-                      : 'bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900'
-                    } transition-all duration-200`}
+                  className={`p-2.5 rounded-lg ${theme === 'dark'
+                    ? 'hover:bg-gray-700 text-gray-400 hover:text-white'
+                    : 'hover:bg-gray-200 text-gray-600 hover:text-gray-900'
+                    } transition-all duration-200 group`}
                   title="Zoom In"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1163,10 +1177,10 @@ const TradingView = () => {
                 </button>
                 <button
                   onClick={zoomOut}
-                  className={`p-2 rounded-lg ${theme === 'dark'
-                      ? 'bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white'
-                      : 'bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900'
-                    } transition-all duration-200`}
+                  className={`p-2.5 rounded-lg ${theme === 'dark'
+                    ? 'hover:bg-gray-700 text-gray-400 hover:text-white'
+                    : 'hover:bg-gray-200 text-gray-600 hover:text-gray-900'
+                    } transition-all duration-200 group`}
                   title="Zoom Out"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1175,55 +1189,71 @@ const TradingView = () => {
                 </button>
                 <button
                   onClick={resetView}
-                  className={`p-2 rounded-lg ${theme === 'dark'
-                      ? 'bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white'
-                      : 'bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900'
-                    } transition-all duration-200`}
+                  className={`p-2.5 rounded-lg ${theme === 'dark'
+                    ? 'hover:bg-gray-700 text-gray-400 hover:text-white'
+                    : 'hover:bg-gray-200 text-gray-600 hover:text-gray-900'
+                    } transition-all duration-200 group`}
                   title="Reset View"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
                 </button>
               </div>
             </div>
+  
+            {/* Loading Overlay */}
             {loading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
-                <div className="flex flex-col items-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mb-4"></div>
-                  <p className={`text-lg font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                    Loading chart data...
+              <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50">
+                <div className="flex flex-col items-center p-8 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
+                  <div className="relative w-16 h-16 mb-6">
+                    <div className="absolute inset-0 rounded-full border-4 border-blue-500/20"></div>
+                    <div className="absolute inset-0 rounded-full border-t-4 border-blue-500 animate-spin"></div>
+                  </div>
+                  <p className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-2`}>
+                    Loading Chart Data
+                  </p>
+                  <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                    Please wait while we fetch the latest market data...
                   </p>
                 </div>
               </div>
             )}
-            <div ref={chartContainerRef} className="w-full h-[500px] relative" />
+  
+            {/* Chart Container */}
+            <div ref={chartContainerRef} className="w-full h-[600px] relative" />
           </div>
-          <div className={`mt-6 p-4 rounded-xl ${theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'} border`}>
-            <h3 className={`text-sm font-semibold mb-2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-              Keyboard Shortcuts
-            </h3>
-            <div className="flex flex-wrap gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <kbd className={`px-2 py-1 rounded text-xs font-mono ${theme === 'dark' ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-600'}`}>Space</kbd>
-                <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Reset View</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <kbd className={`px-2 py-1 rounded text-xs font-mono ${theme === 'dark' ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-600'}`}>+</kbd>
-                <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Zoom In</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <kbd className={`px-2 py-1 rounded text-xs font-mono ${theme === 'dark' ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-600'}`}>-</kbd>
-                <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Zoom Out</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <kbd className={`px-2 py-1 rounded text-xs font-mono ${theme === 'dark' ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-600'}`}>L</kbd>
-                <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Toggle Live</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <kbd className={`px-2 py-1 rounded text-xs font-mono ${theme === 'dark' ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-600'}`}>Esc</kbd>
-                <span className={theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}>Reset View</span>
-              </div>
+  
+          {/* Keyboard Shortcuts */}
+          <div className={`mt-6 p-6 rounded-2xl ${theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'} border shadow-lg`}>
+            <div className="flex items-center gap-3 mb-4">
+              <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              <h3 className={`text-lg font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                Keyboard Shortcuts
+              </h3>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              {[
+                { key: 'Space', action: 'Reset View' },
+                { key: '+', action: 'Zoom In' },
+                { key: '-', action: 'Zoom Out' },
+                { key: 'L', action: 'Toggle Live' },
+                { key: 'Esc', action: 'Reset View' }
+              ].map(({ key, action }) => (
+                <div key={key} className="flex flex-col items-center gap-2 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+                  <kbd className={`px-3 py-2 rounded-lg text-sm font-bold border-2 ${theme === 'dark' 
+                    ? 'bg-gray-700 border-gray-600 text-gray-300' 
+                    : 'bg-white border-gray-300 text-gray-700'
+                  } shadow-sm`}>
+                    {key}
+                  </kbd>
+                  <span className={`text-xs font-medium text-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                    {action}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
